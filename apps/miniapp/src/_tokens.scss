@@ -1,0 +1,63 @@
+// ============================================================
+// Design Tokens — mirrors packages/core/src/constants/tokens.ts
+// ============================================================
+
+@mixin theme-light {
+  --color-text: #1A1A2E;
+  --color-text-secondary: #60646C;
+  --color-text-tertiary: #9A9FAA;
+  --color-text-link: #2563EB;
+  --color-text-disabled: #C4C8CF;
+
+  --color-background: #FFFFFF;
+  --color-background-element: #F0F0F3;
+  --color-background-selected: #E0E1E6;
+  --color-background-disabled: #F8F8FA;
+  --color-page-bg: #F5F5F7;
+
+  --color-brand: #4F46E5;
+  --color-brand-light: #EEF2FF;
+  --color-brand-pressed: #4338CA;
+
+  --color-success: #16A34A;
+  --color-warning: #F59E0B;
+  --color-error: #DC2626;
+  --color-info: #2563EB;
+
+  --color-border: #E0E1E6;
+  --color-border-light: #F0F0F3;
+  --color-input-border: #D1D5DB;
+
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+}
+
+@mixin theme-dark {
+  --color-text: #F0F0F3;
+  --color-text-secondary: #B0B4BA;
+  --color-text-tertiary: #80858D;
+  --color-text-link: #60A5FA;
+  --color-text-disabled: #4A4D54;
+
+  --color-background: #0A0A0F;
+  --color-background-element: #1C1C24;
+  --color-background-selected: #2E313A;
+  --color-background-disabled: #141419;
+  --color-page-bg: #0A0A0F;
+
+  --color-brand: #6366F1;
+  --color-brand-light: #1E1B4B;
+  --color-brand-pressed: #818CF8;
+
+  --color-success: #22C55E;
+  --color-warning: #FBBF24;
+  --color-error: #EF4444;
+  --color-info: #60A5FA;
+
+  --color-border: #2E313A;
+  --color-border-light: #1C1C24;
+  --color-input-border: #2E313A;
+
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+}

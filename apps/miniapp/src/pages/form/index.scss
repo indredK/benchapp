@@ -1,6 +1,6 @@
 @import '../../tokens';
 
-.org-page {
+.form-page {
   @include theme-light;
 
   padding: 32px;
@@ -8,11 +8,11 @@
   background-color: var(--color-page-bg);
 }
 
-.org-page--dark {
+.form-page--dark {
   @include theme-dark;
 }
 
-.org-page__title {
+.form-page__title {
   font-size: 40px;
   font-weight: 700;
   color: var(--color-text);
@@ -34,12 +34,6 @@
   color: var(--color-text-secondary);
 }
 
-.section-title {
-  font-size: 30px;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
 .input {
   border: 1px solid var(--color-input-border);
   border-radius: 8px;
@@ -51,9 +45,19 @@
   box-sizing: border-box;
 }
 
+.input--textarea {
+  height: 160px;
+  text-align: left;
+}
+
+.btn-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
 .btn {
-  background-color: var(--color-brand);
-  color: var(--color-white);
+  flex: 1;
   font-size: 28px;
   border-radius: 8px;
   height: 80px;
@@ -61,5 +65,15 @@
   text-align: center;
   border: none;
   padding: 0;
-  width: 100%;
+}
+
+.btn--submit {
+  background-color: var(--color-brand);
+  color: var(--color-white);
+}
+
+.btn--reset {
+  background-color: var(--color-background);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-input-border);
 }

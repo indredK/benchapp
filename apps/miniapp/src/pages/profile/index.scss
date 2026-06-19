@@ -1,0 +1,87 @@
+@import '../../tokens';
+
+.profile-page {
+  @include theme-light;
+
+  padding: 32px;
+  min-height: 100vh;
+  background-color: var(--color-page-bg);
+}
+
+.profile-page--dark {
+  @include theme-dark;
+}
+
+.profile-page__title {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 32px;
+}
+
+.card {
+  background-color: var(--color-background);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.label {
+  font-size: 28px;
+  color: var(--color-text-secondary);
+}
+
+.section-title {
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+// Option row (language / theme)
+.option-row {
+  display: flex;
+  gap: 12px;
+}
+
+.option-btn {
+  flex: 1;
+  padding: 20px 0;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--color-input-border);
+  background-color: var(--color-background);
+}
+
+.option-btn--active {
+  border-color: var(--color-brand);
+  background-color: var(--color-brand-light);
+}
+
+.option-btn__text {
+  font-size: 28px;
+  color: var(--color-text-secondary);
+}
+
+.option-btn__text--active {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+// Logout
+.logout-btn {
+  padding: 28px 0;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid var(--color-error);
+  margin-top: 8px;
+  background-color: var(--color-background);
+}
+
+.logout-btn__text {
+  font-size: 28px;
+  color: var(--color-error);
+  font-weight: 600;
+}

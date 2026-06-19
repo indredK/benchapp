@@ -12,10 +12,10 @@ export class AppError extends Error {
 
   constructor(
     message: string,
-    code: BizErrorCode = 10000 satisfies BizErrorCode,
-    options?: { httpStatus?: number; requestId?: string; data?: unknown; cause?: Error },
+    code: BizErrorCode = 10000 as BizErrorCode,
+    options?: { httpStatus?: number; requestId?: string; data?: unknown },
   ) {
-    super(message, { cause: options?.cause });
+    super(message);
     this.name = 'AppError';
     this.code = code;
     this.httpStatus = options?.httpStatus;
@@ -50,10 +50,10 @@ export function normalizeError(error: unknown): AppError {
     // Check if it's a fetch/network error
     const msg = error.message.toLowerCase();
     if (msg.includes('network') || msg.includes('timeout') || msg.includes('abort')) {
-      return new AppError(error.message, 10006 satisfies BizErrorCode, { cause: error });
+      return new AppError(error.message, 10006 as BizErrorCode);
     }
-    return new AppError(error.message, 10000 satisfies BizErrorCode, { cause: error });
+    return new AppError(error.message, 10000 as BizErrorCode);
   }
 
-  return new AppError(typeof error === 'string' ? error : 'Unknown error', 10000 satisfies BizErrorCode);
+  return new AppError(typeof error === 'string' ? error : 'Unknown error', 10000 as BizErrorCode);
 }

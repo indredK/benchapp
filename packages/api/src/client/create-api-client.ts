@@ -3,7 +3,6 @@
 // ============================================================
 
 import type { HttpAdapter, RequestOptions, TokenProvider } from '@repo/types/api';
-import { BizErrorCode } from '@repo/types/api';
 import { AppError } from '../errors/api-error';
 
 export interface ApiClientConfig {

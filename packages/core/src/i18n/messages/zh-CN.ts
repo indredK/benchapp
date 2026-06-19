@@ -54,6 +54,50 @@ const zhCN = {
   'user.profile': '个人中心',
   'user.nickname': '昵称',
   'user.avatar': '头像',
+
+  // Organization
+  'org.title': '组织架构',
+  'org.searchPlaceholder': '搜索部门或成员',
+  'org.searchBtn': '搜索',
+  'org.department': '部门',
+  'org.member': '成员',
+  'org.addDepartment': '新增部门',
+  'org.addMember': '新增成员',
+  'org.departmentName': '部门名称',
+  'org.namePlaceholder': '请输入名称',
+  'org.memberName': '成员姓名',
+  'org.submit': '提交',
+
+  // Form
+  'form.title': '表单',
+  'form.name': '姓名',
+  'form.namePlaceholder': '请输入姓名',
+  'form.phone': '手机号',
+  'form.phonePlaceholder': '请输入手机号',
+  'form.email': '邮箱',
+  'form.emailPlaceholder': '请输入邮箱',
+  'form.remark': '备注',
+  'form.remarkPlaceholder': '请输入备注信息',
+  'form.submit': '提交',
+  'form.submitSuccess': '提交成功',
+  'form.reset': '重置',
+
+  // Profile
+  'profile.title': '我的',
+  'profile.nickname': '昵称',
+  'profile.nicknamePlaceholder': '请输入昵称',
+  'profile.phone': '手机号',
+  'profile.phonePlaceholder': '请输入手机号',
+  'profile.email': '邮箱',
+  'profile.emailPlaceholder': '请输入邮箱',
+  'profile.save': '保存',
+  'profile.saveSuccess': '保存成功',
+  'profile.accountInfo': '账户信息',
+  'profile.settings': '通用设置',
+  'profile.about': '关于',
+  'profile.aboutInfo': 'BenchApp v1.0.0',
+  'profile.logoutConfirm': '确认退出登录？',
+  'profile.login': '登录 / 注册',
 } as const;
 
 export default zhCN;

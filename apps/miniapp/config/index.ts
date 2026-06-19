@@ -1,4 +1,5 @@
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import path from 'node:path'
 
 import devConfig from './dev'
 import prodConfig from './prod'
@@ -17,6 +18,9 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     },
     sourceRoot: 'src',
     outputRoot: 'dist',
+    alias: {
+      '@': path.resolve(__dirname, '..', 'src'),
+    },
     plugins: [
       "@tarojs/plugin-generator"
     ],

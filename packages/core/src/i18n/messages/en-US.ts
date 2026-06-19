@@ -53,6 +53,50 @@ const enUS = {
   'user.profile': 'Profile',
   'user.nickname': 'Nickname',
   'user.avatar': 'Avatar',
+
+  // Organization
+  'org.title': 'Organization',
+  'org.searchPlaceholder': 'Search department or member',
+  'org.searchBtn': 'Search',
+  'org.department': 'Department',
+  'org.member': 'Member',
+  'org.addDepartment': 'Add Department',
+  'org.addMember': 'Add Member',
+  'org.departmentName': 'Department Name',
+  'org.namePlaceholder': 'Enter name',
+  'org.memberName': 'Member Name',
+  'org.submit': 'Submit',
+
+  // Form
+  'form.title': 'Form',
+  'form.name': 'Name',
+  'form.namePlaceholder': 'Enter your name',
+  'form.phone': 'Phone',
+  'form.phonePlaceholder': 'Enter your phone',
+  'form.email': 'Email',
+  'form.emailPlaceholder': 'Enter your email',
+  'form.remark': 'Remark',
+  'form.remarkPlaceholder': 'Enter remarks',
+  'form.submit': 'Submit',
+  'form.submitSuccess': 'Submitted successfully',
+  'form.reset': 'Reset',
+
+  // Profile
+  'profile.title': 'My',
+  'profile.nickname': 'Nickname',
+  'profile.nicknamePlaceholder': 'Enter nickname',
+  'profile.phone': 'Phone',
+  'profile.phonePlaceholder': 'Enter phone number',
+  'profile.email': 'Email',
+  'profile.emailPlaceholder': 'Enter email',
+  'profile.save': 'Save',
+  'profile.saveSuccess': 'Saved successfully',
+  'profile.accountInfo': 'Account Info',
+  'profile.settings': 'General Settings',
+  'profile.about': 'About',
+  'profile.aboutInfo': 'BenchApp v1.0.0',
+  'profile.logoutConfirm': 'Confirm logout?',
+  'profile.login': 'Login / Register',
 } as const;
 
 export default enUS;
