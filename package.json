@@ -19,10 +19,20 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.25.0",
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,json,md,scss,css,yaml,yml}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx}": [
+      "tsc --noEmit"
+    ]
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@inquirer/prompts": "^8.5.2",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.4"
   }
 }
