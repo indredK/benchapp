@@ -1,4 +1,5 @@
-import { PropsWithChildren, useEffect } from 'react'
+import type { PropsWithChildren } from 'react'
+import { useEffect } from 'react'
 import { useLaunch } from '@tarojs/taro'
 import Taro from '@tarojs/taro'
 import { useI18n } from '@/hooks/use-i18n'
@@ -13,12 +14,12 @@ const TAB_BAR_ITEMS = [
   { index: 2, key: 'profile.title' },
 ]
 
-function App({ children }: PropsWithChildren<any>) {
+function App({ children }: PropsWithChildren) {
   const { t, locale } = useI18n()
   const { resolved: themeResolved } = useTheme()
 
   useLaunch(() => {
-    console.log('App launched.')
+    // App launched
   })
 
   // Sync tab bar text when language changes

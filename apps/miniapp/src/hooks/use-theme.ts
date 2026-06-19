@@ -2,8 +2,9 @@
 // MiniApp — Theme hook (light / dark / system)
 // ============================================================
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Taro from '@tarojs/taro';
+import { miniappStorage } from '@/lib/storage';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type ResolvedTheme = 'light' | 'dark';
@@ -37,9 +38,8 @@ export function useTheme() {
 
   useEffect(() => {
     // Hydrate from storage
-    Taro.getStorage({ key: STORAGE_KEY })
-      .then((res) => {
-        const saved = res.data;
+    miniappStorage.getItem(STORAGE_KEY)
+      .then((saved) => {
         if (saved === 'light' || saved === 'dark' || saved === 'system') {
           globalMode = saved;
           globalResolved = resolveTheme(globalMode);
@@ -49,7 +49,6 @@ export function useTheme() {
         }
       })
       .catch(() => {
-        // No saved preference, use defaults
         setModeState(globalMode);
         setResolved(globalResolved);
       });
@@ -65,7 +64,7 @@ export function useTheme() {
   const setMode = useCallback((next: ThemeMode) => {
     globalMode = next;
     globalResolved = resolveTheme(next);
-    Taro.setStorage({ key: STORAGE_KEY, data: next }).catch(() => {});
+    miniappStorage.setItem(STORAGE_KEY, next).catch(() => {});
     notifyAll(globalMode, globalResolved);
     setModeState(globalMode);
     setResolved(globalResolved);

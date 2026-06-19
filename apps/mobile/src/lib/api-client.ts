@@ -1,26 +1,16 @@
 // ============================================================
-// Mobile — API Client Setup
+// Mobile — API Client (Fetch-based)
 // ============================================================
 
-import { createFetchAdapter, createApiClient, createTokenProvider } from '@repo/api';
-import { mobileStorage } from './storage';
-import type { Env } from '@repo/types';
+import { createApiClient, createFetchAdapter } from '@repo/api';
+import { getEnvConfig } from '@/config/env';
 
-const apiConfig: Record<Env, string> = {
-  development: 'http://localhost:3000/api',
-  test: 'https://test-api.example.com',
-  production: 'https://api.example.com',
-};
+const config = getEnvConfig();
 
-const currentEnv: Env = (process.env.EXPO_PUBLIC_ENV as Env) ?? 'development';
-
-const adapter = createFetchAdapter({
-  baseURL: apiConfig[currentEnv],
-  defaultTimeout: 15000,
+export const apiClient = createApiClient({
+  adapter: createFetchAdapter({ baseURL: config.baseURL }),
+  defaultTimeoutMs: 15000,
 });
 
-const tokenProvider = createTokenProvider(mobileStorage);
-
-export const apiClient = createApiClient({ adapter, tokenProvider });
-
-export { currentEnv, apiConfig };
+// Re-export for convenience
+export { createApiClient, createFetchAdapter } from '@repo/api';

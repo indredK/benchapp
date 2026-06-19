@@ -5,7 +5,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { createTranslate } from '@repo/core/i18n';
 import type { Locale } from '@repo/types/i18n';
-import Taro from '@tarojs/taro';
+import { miniappStorage } from '@/lib/storage';
 
 const STORAGE_KEY = 'app_locale';
 
@@ -22,9 +22,8 @@ export function useI18n() {
 
   useEffect(() => {
     // Hydrate from storage
-    Taro.getStorage({ key: STORAGE_KEY })
-      .then((res) => {
-        const saved = res.data;
+    miniappStorage.getItem(STORAGE_KEY)
+      .then((saved) => {
         if (saved === 'zh-CN' || saved === 'en-US') {
           globalLocale = saved;
           globalT = createTranslate(globalLocale);
@@ -42,7 +41,7 @@ export function useI18n() {
   const setLocale = useCallback((next: Locale) => {
     globalLocale = next;
     globalT = createTranslate(next);
-    Taro.setStorage({ key: STORAGE_KEY, data: next }).catch(() => {});
+    miniappStorage.setItem(STORAGE_KEY, next).catch(() => {});
     notifyAll(next);
     setLocaleState(next);
   }, []);

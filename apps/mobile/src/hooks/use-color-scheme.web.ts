@@ -1,21 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useColorScheme as useRNColorScheme } from 'react-native';
+import { useSyncExternalStore } from 'react';
+
+const mediaQuery =
+  typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+function subscribe(callback: () => void) {
+  if (!mediaQuery) return () => {};
+  mediaQuery.addEventListener('change', callback);
+  return () => mediaQuery.removeEventListener('change', callback);
+}
+
+function getSnapshot() {
+  if (!mediaQuery) return 'light' as const;
+  return mediaQuery.matches ? ('dark' as const) : ('light' as const);
+}
+
+function getServerSnapshot() {
+  return 'light' as const;
+}
 
 /**
- * To support static rendering, this value needs to be re-calculated on the client side for web
+ * Web 端系统配色方案 hook。
+ * 使用 useSyncExternalStore 避免 hydration 闪烁：
+ * 首屏与服务端返回一致的 'light'，客户端挂载后立刻同步真实值。
  */
 export function useColorScheme() {
-  const [hasHydrated, setHasHydrated] = useState(false);
-
-  useEffect(() => {
-    setHasHydrated(true);
-  }, []);
-
-  const colorScheme = useRNColorScheme();
-
-  if (hasHydrated) {
-    return colorScheme;
-  }
-
-  return 'light';
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

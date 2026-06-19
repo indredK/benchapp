@@ -13,7 +13,8 @@
     "./store": "./src/store/index.ts",
     "./constants": "./src/constants/index.ts",
     "./utils": "./src/utils/index.ts",
-    "./errors": "./src/errors/index.ts"
+    "./errors": "./src/errors/index.ts",
+    "./form": "./src/form/index.ts"
   },
   "dependencies": {
     "@repo/types": "workspace:*",

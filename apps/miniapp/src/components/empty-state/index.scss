@@ -1,0 +1,46 @@
+@import '../../tokens';
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 32px;
+  gap: 16px;
+  min-height: 400px;
+}
+
+.empty-state__title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.empty-state__desc {
+  font-size: 28px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.empty-state__btn {
+  padding: 16px 48px;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.empty-state__btn--retry {
+  border: 1px solid var(--color-brand);
+}
+
+.empty-state__btn--action {
+  background-color: var(--color-brand);
+}
+
+.empty-state__btn-text {
+  font-size: 28px;
+  color: var(--color-text-link);
+}
+
+.empty-state__btn-text--action {
+  color: var(--color-white);
+}
