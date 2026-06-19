@@ -1,7 +1,6 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { ThemedText } from './themed-text';
-import { ThemedView } from './themed-view';
 import { useT } from '@/lib/i18n-context';
 import { useTheme } from '@/hooks/use-theme';
 import { Spacing } from '@/constants/theme';

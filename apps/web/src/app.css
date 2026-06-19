@@ -1,0 +1,233 @@
+/* ============================================================
+   Global Styles — Design tokens + layout + responsive
+   ============================================================ */
+
+/* --- CSS Reset --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+/* --- Design Tokens (light) --- */
+:root {
+  --color-text: #1A1A2E;
+  --color-text-secondary: #60646C;
+  --color-text-tertiary: #9A9FAA;
+  --color-bg: #FFFFFF;
+  --color-bg-page: #F5F5F7;
+  --color-bg-element: #F0F0F3;
+  --color-brand: #4F46E5;
+  --color-brand-light: #EEF2FF;
+  --color-brand-hover: #4338CA;
+  --color-border: #D1D5DB;
+  --color-error: #DC2626;
+  --color-white: #FFFFFF;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --max-width: 800px;
+}
+
+/* --- Dark Theme --- */
+.theme-dark {
+  --color-text: #F0F0F3;
+  --color-text-secondary: #B0B4BA;
+  --color-text-tertiary: #80858D;
+  --color-bg: #0A0A0F;
+  --color-bg-page: #0A0A0F;
+  --color-bg-element: #1C1C24;
+  --color-brand: #6366F1;
+  --color-brand-light: #1E1B4B;
+  --color-brand-hover: #818CF8;
+  --color-border: #2E313A;
+  --color-error: #EF4444;
+  --color-white: #FFFFFF;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+body {
+  background: var(--color-bg-page);
+  color: var(--color-text);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* --- Layout --- */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Top navigation (desktop) */
+.top-nav {
+  display: none;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 24px;
+  height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+@media (min-width: 768px) {
+  .top-nav { display: flex; }
+}
+.top-nav__brand { font-size: 18px; font-weight: 700; color: var(--color-brand); }
+.top-nav__links { display: flex; gap: 8px; }
+.top-nav__link {
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.top-nav__link:hover { color: var(--color-text); background: var(--color-bg-element); }
+.top-nav__link--active { color: var(--color-brand); background: var(--color-brand-light); }
+
+/* Main content */
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+@media (min-width: 768px) {
+  .main-content { padding: 40px 24px; }
+}
+@media (max-width: 767px) {
+  .main-content { padding-bottom: 96px; } /* room for bottom tabs */
+}
+
+/* Page title */
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--color-text);
+}
+
+/* --- Card --- */
+.card {
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--color-border);
+}
+
+/* --- Form elements --- */
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+.form-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  font-size: 15px;
+  color: var(--color-text);
+  background: var(--color-bg-page);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-input:focus { border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-light); }
+textarea.form-input { height: 100px; padding: 12px 14px; resize: vertical; min-height: 80px; }
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn:active { transform: scale(0.98); }
+.btn--primary { background: var(--color-brand); color: var(--color-white); }
+.btn--primary:hover { background: var(--color-brand-hover); }
+.btn--secondary { background: var(--color-bg); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.btn--secondary:hover { background: var(--color-bg-element); }
+.btn--danger { background: none; color: var(--color-error); border: 1px solid var(--color-error); }
+.btn--danger:hover { background: var(--color-error); color: var(--color-white); }
+.btn--block { width: 100%; }
+.btn-row { display: flex; gap: 12px; margin-top: 8px; }
+.btn-row .btn { flex: 1; }
+
+/* --- Option row (language/theme buttons) --- */
+.option-row { display: flex; gap: 10px; }
+.option-btn {
+  flex: 1;
+  height: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.option-btn:hover { border-color: var(--color-brand); }
+.option-btn--active { border-color: var(--color-brand); background: var(--color-brand-light); color: var(--color-text); font-weight: 600; }
+
+/* Section title inside card */
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+.section-mt { margin-top: 24px; }
+
+/* --- Bottom Tab Bar (mobile) --- */
+.bottom-tabs {
+  display: flex;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 72px;
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@media (min-width: 768px) {
+  .bottom-tabs { display: none; }
+}
+.tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.tab-btn:hover { color: var(--color-text); }
+.tab-btn--active { color: var(--color-brand); }
+.tab-icon { width: 24px; height: 24px; opacity: 0.6; }
+.tab-btn--active .tab-icon { opacity: 1; }

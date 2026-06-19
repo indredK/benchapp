@@ -7,11 +7,13 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { PageContainer } from '@/components/page-container';
 import { useT } from '@/lib/i18n-context';
 import { useTheme } from '@/hooks/use-theme';
 import { Spacing } from '@/constants/theme';
@@ -47,60 +49,68 @@ export default function OrganizationScreen() {
     <ThemedView style={styles.root}>
       <SafeAreaView style={styles.safe}>
         <ScrollView contentContainerStyle={styles.scroll}>
-          <ThemedText type="subtitle" style={styles.title}>
-            {t('org.title')}
-          </ThemedText>
-
-          {/* Search box */}
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="small" themeColor="textSecondary" style={styles.label}>
-              {t('org.searchPlaceholder')}
+          <PageContainer>
+            <ThemedText type="subtitle" style={styles.title}>
+              {t('org.title')}
             </ThemedText>
-            <TextInput
-              style={inputStyle}
-              value={searchText}
-              onChangeText={setSearchText}
-              placeholder={t('org.searchPlaceholder')}
-              placeholderTextColor={theme.textTertiary}
-            />
-            <TouchableOpacity style={btnStyle} onPress={handleSearch}>
-              <ThemedText type="small" style={{ color: theme.white }}>{t('org.searchBtn')}</ThemedText>
-            </TouchableOpacity>
-          </ThemedView>
 
-          {/* Add Department */}
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold" style={styles.label}>
-              {t('org.addDepartment')}
-            </ThemedText>
-            <TextInput
-              style={inputStyle}
-              value={deptName}
-              onChangeText={setDeptName}
-              placeholder={t('org.namePlaceholder')}
-              placeholderTextColor={theme.textTertiary}
-            />
-            <TouchableOpacity style={btnStyle} onPress={handleAddDept}>
-              <ThemedText type="small" style={{ color: theme.white }}>{t('org.submit')}</ThemedText>
-            </TouchableOpacity>
-          </ThemedView>
+            <View style={styles.gap} />
 
-          {/* Add Member */}
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold" style={styles.label}>
-              {t('org.addMember')}
-            </ThemedText>
-            <TextInput
-              style={inputStyle}
-              value={memberName}
-              onChangeText={setMemberName}
-              placeholder={t('org.namePlaceholder')}
-              placeholderTextColor={theme.textTertiary}
-            />
-            <TouchableOpacity style={btnStyle} onPress={handleAddMember}>
-              <ThemedText type="small" style={{ color: theme.white }}>{t('org.submit')}</ThemedText>
-            </TouchableOpacity>
-          </ThemedView>
+            {/* Search box */}
+            <ThemedView type="backgroundElement" style={styles.card}>
+              <ThemedText type="small" themeColor="textSecondary" style={styles.label}>
+                {t('org.searchPlaceholder')}
+              </ThemedText>
+              <TextInput
+                style={inputStyle}
+                value={searchText}
+                onChangeText={setSearchText}
+                placeholder={t('org.searchPlaceholder')}
+                placeholderTextColor={theme.textTertiary}
+              />
+              <TouchableOpacity style={btnStyle} onPress={handleSearch}>
+                <ThemedText type="small" style={{ color: theme.white }}>{t('org.searchBtn')}</ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
+
+            <View style={styles.gap} />
+
+            {/* Add Department */}
+            <ThemedView type="backgroundElement" style={styles.card}>
+              <ThemedText type="smallBold" style={styles.label}>
+                {t('org.addDepartment')}
+              </ThemedText>
+              <TextInput
+                style={inputStyle}
+                value={deptName}
+                onChangeText={setDeptName}
+                placeholder={t('org.namePlaceholder')}
+                placeholderTextColor={theme.textTertiary}
+              />
+              <TouchableOpacity style={btnStyle} onPress={handleAddDept}>
+                <ThemedText type="small" style={{ color: theme.white }}>{t('org.submit')}</ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
+
+            <View style={styles.gap} />
+
+            {/* Add Member */}
+            <ThemedView type="backgroundElement" style={styles.card}>
+              <ThemedText type="smallBold" style={styles.label}>
+                {t('org.addMember')}
+              </ThemedText>
+              <TextInput
+                style={inputStyle}
+                value={memberName}
+                onChangeText={setMemberName}
+                placeholder={t('org.namePlaceholder')}
+                placeholderTextColor={theme.textTertiary}
+              />
+              <TouchableOpacity style={btnStyle} onPress={handleAddMember}>
+                <ThemedText type="small" style={{ color: theme.white }}>{t('org.submit')}</ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
+          </PageContainer>
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
@@ -110,8 +120,9 @@ export default function OrganizationScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   safe: { flex: 1 },
-  scroll: { padding: Spacing.four, gap: Spacing.lg },
-  title: { marginBottom: Spacing.sm },
+  scroll: { padding: Spacing.four },
+  title: { marginBottom: 0 },
+  gap: { height: Spacing.lg },
   card: {
     gap: Spacing.sm,
     padding: Spacing.lg,

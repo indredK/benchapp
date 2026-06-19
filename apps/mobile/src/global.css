@@ -1,3 +1,4 @@
+/* Font variables */
 :root {
   --font-display:
     Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
@@ -6,4 +7,20 @@
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+/* Web reset */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font-display);
+}
+
+/* Dark mode — body background to avoid white flash */
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #0A0A0F;
+    color: #F0F0F3;
+  }
 }
