@@ -11,7 +11,6 @@ const APPS_DIR = path.join(ROOT_DIR, "apps");
 const collator = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
 
 const MESSAGES = {
-  back: "返回应用列表",
   noApps: "未在 apps 目录下找到可运行的应用包。",
   noScripts: "这个应用包里没有可运行的 scripts，请重新选择。",
   packagePrompt: "请选择要运行的应用包",
@@ -147,39 +146,31 @@ function resolvePackageManager() {
   throw new Error("未找到可用的包管理器，请先安装 pnpm 或 npm。");
 }
 
-function buildRunArgs(packageManager, appDirectory, scriptName) {
-  if (packageManager === "pnpm") {
-    return ["--dir", appDirectory, "run", scriptName];
-  }
-
-  if (packageManager === "npm") {
-    return ["--prefix", appDirectory, "run", scriptName];
-  }
-
-  throw new Error(`暂不支持的包管理器: ${packageManager}`);
+function buildRunArgs(scriptName) {
+  return ["run", scriptName];
 }
 
 async function runScript(app, scriptName) {
   const packageManager = resolvePackageManager();
-  const args = buildRunArgs(packageManager, app.directory, scriptName);
+  const args = buildRunArgs(scriptName);
 
   console.log(`\n> ${packageManager} ${args.join(" ")}\n`);
 
   await new Promise((resolve, reject) => {
     const child = spawn(packageManager, args, {
-      cwd: ROOT_DIR,
+      cwd: app.directory,
       env: process.env,
       stdio: "inherit",
     });
 
     child.on("error", reject);
-    child.on("exit", (code) => {
-      if (code === 0) {
-        resolve();
+    child.on("exit", (code, signal) => {
+      if (code === 0 || signal !== null) {
+        resolve(); // 正常退出或被信号终止（Ctrl+C）
         return;
       }
 
-      reject(new Error(`脚本执行失败，退出码: ${code ?? "unknown"}`));
+      reject(new Error(`脚本执行失败，退出码: ${code}`));
     });
   });
 }
