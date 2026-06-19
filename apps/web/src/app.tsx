@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
+import { useContactFormController, useOrganizationController, useProfileSettingsController } from '@repo/features';
+import type { ThemeMode } from '@repo/types/theme';
 import { useT, useLocale } from './lib/i18n';
 import { useThemeMode } from './lib/theme';
-import type { ThemeMode } from './lib/theme';
+import { webFeedback } from './lib/feedback';
 
 type Page = 'org' | 'form' | 'profile';
 
@@ -14,9 +16,12 @@ const TABS: { id: Page; labelKey: string; icon: string }[] = [
 
 function OrgPage() {
   const t = useT();
-  const [searchText, setSearchText] = useState('');
-  const [deptName, setDeptName] = useState('');
-  const [memberName, setMemberName] = useState('');
+  const { draft, setSearchText, setDeptName, setMemberName, handleSearch, handleAddDepartment, handleAddMember } =
+    useOrganizationController({
+      platform: 'web',
+      feedback: webFeedback,
+      t,
+    });
 
   return (
     <div>
@@ -24,9 +29,9 @@ function OrgPage() {
 
       <div className="card">
         <label className="form-label">{t('org.searchPlaceholder')}</label>
-        <input className="form-input" value={searchText} onChange={e => setSearchText(e.target.value)} placeholder={t('org.searchPlaceholder')} />
+        <input className="form-input" value={draft.searchText} onChange={e => setSearchText(e.target.value)} placeholder={t('org.searchPlaceholder')} />
         <div style={{ marginTop: 12 }}>
-          <button className="btn btn--primary btn--block" onClick={() => searchText.trim() && alert(t('org.searchBtn') + ': ' + searchText)}>
+          <button className="btn btn--primary btn--block" onClick={() => void handleSearch()}>
             {t('org.searchBtn')}
           </button>
         </div>
@@ -34,25 +39,17 @@ function OrgPage() {
 
       <div className="card">
         <div className="section-title">{t('org.addDepartment')}</div>
-        <input className="form-input" value={deptName} onChange={e => setDeptName(e.target.value)} placeholder={t('org.namePlaceholder')} />
+        <input className="form-input" value={draft.deptName} onChange={e => setDeptName(e.target.value)} placeholder={t('org.namePlaceholder')} />
         <div style={{ marginTop: 12 }}>
-          <button className="btn btn--primary btn--block" onClick={() => {
-            if (!deptName.trim()) return;
-            alert(t('org.addDepartment') + ': ' + deptName);
-            setDeptName('');
-          }}>{t('org.submit')}</button>
+          <button className="btn btn--primary btn--block" onClick={() => void handleAddDepartment()}>{t('org.submit')}</button>
         </div>
       </div>
 
       <div className="card">
         <div className="section-title">{t('org.addMember')}</div>
-        <input className="form-input" value={memberName} onChange={e => setMemberName(e.target.value)} placeholder={t('org.namePlaceholder')} />
+        <input className="form-input" value={draft.memberName} onChange={e => setMemberName(e.target.value)} placeholder={t('org.namePlaceholder')} />
         <div style={{ marginTop: 12 }}>
-          <button className="btn btn--primary btn--block" onClick={() => {
-            if (!memberName.trim()) return;
-            alert(t('org.addMember') + ': ' + memberName);
-            setMemberName('');
-          }}>{t('org.submit')}</button>
+          <button className="btn btn--primary btn--block" onClick={() => void handleAddMember()}>{t('org.submit')}</button>
         </div>
       </div>
     </div>
@@ -61,12 +58,11 @@ function OrgPage() {
 
 function FormPage() {
   const t = useT();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [remark, setRemark] = useState('');
-
-  const handleReset = () => { setName(''); setPhone(''); setEmail(''); setRemark(''); };
+  const { draft, setName, setPhone, setEmail, setRemark, handleReset, handleSubmit } = useContactFormController({
+    platform: 'web',
+    feedback: webFeedback,
+    t,
+  });
 
   return (
     <div>
@@ -74,22 +70,22 @@ function FormPage() {
       <div className="card">
         <div className="form-group">
           <label className="form-label">{t('form.name')}</label>
-          <input className="form-input" value={name} onChange={e => setName(e.target.value)} placeholder={t('form.namePlaceholder')} />
+          <input className="form-input" value={draft.name} onChange={e => setName(e.target.value)} placeholder={t('form.namePlaceholder')} />
         </div>
         <div className="form-group">
           <label className="form-label">{t('form.phone')}</label>
-          <input className="form-input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t('form.phonePlaceholder')} />
+          <input className="form-input" type="tel" value={draft.phone} onChange={e => setPhone(e.target.value)} placeholder={t('form.phonePlaceholder')} />
         </div>
         <div className="form-group">
           <label className="form-label">{t('form.email')}</label>
-          <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t('form.emailPlaceholder')} />
+          <input className="form-input" type="email" value={draft.email} onChange={e => setEmail(e.target.value)} placeholder={t('form.emailPlaceholder')} />
         </div>
         <div className="form-group">
           <label className="form-label">{t('form.remark')}</label>
-          <textarea className="form-input" value={remark} onChange={e => setRemark(e.target.value)} placeholder={t('form.remarkPlaceholder')} />
+          <textarea className="form-input" value={draft.remark} onChange={e => setRemark(e.target.value)} placeholder={t('form.remarkPlaceholder')} />
         </div>
         <div className="btn-row">
-          <button className="btn btn--primary" onClick={() => alert(t('form.submitSuccess'))}>{t('form.submit')}</button>
+          <button className="btn btn--primary" onClick={() => void handleSubmit()}>{t('form.submit')}</button>
           <button className="btn btn--secondary" onClick={handleReset}>{t('form.reset')}</button>
         </div>
       </div>
@@ -101,12 +97,10 @@ function ProfilePage() {
   const t = useT();
   const { locale, setLocale } = useLocale();
   const { mode: themeMode, setMode } = useThemeMode();
-
-  const themeOptions: { key: ThemeMode; label: string }[] = [
-    { key: 'light', label: t('theme.light') },
-    { key: 'dark', label: t('theme.dark') },
-    { key: 'system', label: t('theme.system') },
-  ];
+  const { languageOptions, themeOptions, handleLogout } = useProfileSettingsController({
+    feedback: webFeedback,
+    t,
+  });
 
   return (
     <div>
@@ -115,18 +109,21 @@ function ProfilePage() {
       <div className="card">
         <div className="section-title">{t('settings.language')}</div>
         <div className="option-row">
-          <button className={`option-btn ${locale === 'zh-CN' ? 'option-btn--active' : ''}`} onClick={() => setLocale('zh-CN')}>
-            {t('language.zhCN')}
-          </button>
-          <button className={`option-btn ${locale === 'en-US' ? 'option-btn--active' : ''}`} onClick={() => setLocale('en-US')}>
-            {t('language.enUS')}
-          </button>
+          {languageOptions.map((option) => (
+            <button
+              key={option.key}
+              className={`option-btn ${locale === option.key ? 'option-btn--active' : ''}`}
+              onClick={() => void setLocale(option.key)}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
 
         <div className="section-title section-mt">{t('settings.theme')}</div>
         <div className="option-row">
-          {themeOptions.map(opt => (
-            <button key={opt.key} className={`option-btn ${themeMode === opt.key ? 'option-btn--active' : ''}`} onClick={() => setMode(opt.key)}>
+          {themeOptions.map((opt: { key: ThemeMode; label: string }) => (
+            <button key={opt.key} className={`option-btn ${themeMode === opt.key ? 'option-btn--active' : ''}`} onClick={() => void setMode(opt.key)}>
               {opt.label}
             </button>
           ))}
@@ -139,7 +136,7 @@ function ProfilePage() {
       </div>
 
       <button className="btn btn--danger btn--block" style={{ marginTop: 8 }}
-        onClick={() => { if (confirm(t('profile.logoutConfirm'))) alert(t('settings.logout')); }}>
+        onClick={() => void handleLogout()}>
         {t('settings.logout')}
       </button>
     </div>

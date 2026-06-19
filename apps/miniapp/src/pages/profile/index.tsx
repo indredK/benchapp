@@ -2,15 +2,20 @@
 import { useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { useProfileSettingsController } from '@repo/features';
 import { useI18n } from '@/hooks/use-i18n';
 import { useTheme } from '@/hooks/use-theme';
+import { miniappFeedback } from '@/lib/feedback';
 import { lightColors, darkColors } from '@repo/core';
-import type { ThemeMode } from '@/hooks/use-theme';
 import './index.scss';
 
 export default function ProfilePage() {
   const { t, locale, setLocale } = useI18n();
   const { mode: themeMode, resolved: themeResolved, setMode: setThemeMode } = useTheme();
+  const { languageOptions, themeOptions, handleLogout } = useProfileSettingsController({
+    feedback: miniappFeedback,
+    t,
+  });
 
   // Ensure nav bar matches current theme on this page
   useEffect(() => {
@@ -22,26 +27,6 @@ export default function ProfilePage() {
     });
   }, [themeResolved]);
 
-  const handleLogout = () => {
-    Taro.showModal({
-      title: t('settings.logout'),
-      content: t('profile.logoutConfirm'),
-      confirmText: t('settings.logout'),
-      cancelText: t('common.cancel'),
-      success: (res) => {
-        if (res.confirm) {
-          // logout logic
-        }
-      },
-    });
-  };
-
-  const themeOptions: { key: ThemeMode; label: string }[] = [
-    { key: 'light', label: t('theme.light') },
-    { key: 'dark', label: t('theme.dark') },
-    { key: 'system', label: t('theme.system') },
-  ];
-
   return (
     <View className={`profile-page profile-page--${themeResolved}`}>
       <View className="profile-page__title">{t('profile.title')}</View>
@@ -51,26 +36,19 @@ export default function ProfilePage() {
         {/* Language */}
         <Text className="section-title">{t('settings.language')}</Text>
         <View className="option-row">
-          <View
-            className={`option-btn ${locale === 'zh-CN' ? 'option-btn--active' : ''}`}
-            onClick={() => setLocale('zh-CN')}
-          >
-            <Text
-              className={`option-btn__text ${locale === 'zh-CN' ? 'option-btn__text--active' : ''}`}
+          {languageOptions.map((option) => (
+            <View
+              key={option.key}
+              className={`option-btn ${locale === option.key ? 'option-btn--active' : ''}`}
+              onClick={() => void setLocale(option.key)}
             >
-              {t('language.zhCN')}
-            </Text>
-          </View>
-          <View
-            className={`option-btn ${locale === 'en-US' ? 'option-btn--active' : ''}`}
-            onClick={() => setLocale('en-US')}
-          >
-            <Text
-              className={`option-btn__text ${locale === 'en-US' ? 'option-btn__text--active' : ''}`}
-            >
-              {t('language.enUS')}
-            </Text>
-          </View>
+              <Text
+                className={`option-btn__text ${locale === option.key ? 'option-btn__text--active' : ''}`}
+              >
+                {option.label}
+              </Text>
+            </View>
+          ))}
         </View>
 
         {/* Theme */}
@@ -82,7 +60,7 @@ export default function ProfilePage() {
             <View
               key={opt.key}
               className={`option-btn ${themeMode === opt.key ? 'option-btn--active' : ''}`}
-              onClick={() => setThemeMode(opt.key)}
+              onClick={() => void setThemeMode(opt.key)}
             >
               <Text
                 className={`option-btn__text ${themeMode === opt.key ? 'option-btn__text--active' : ''}`}
@@ -101,7 +79,7 @@ export default function ProfilePage() {
       </View>
 
       {/* --- Logout --- */}
-      <View className="logout-btn" onClick={handleLogout}>
+      <View className="logout-btn" onClick={() => void handleLogout()}>
         <Text className="logout-btn__text">{t('settings.logout')}</Text>
       </View>
     </View>

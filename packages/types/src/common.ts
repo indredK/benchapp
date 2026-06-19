@@ -70,6 +70,41 @@ export interface AsyncResource<T> {
 /** 存储键定义 */
 export type StorageKey = string;
 
+/** Client surface identifier */
+export type ClientPlatform = 'web' | 'miniapp' | 'mobile';
+
+/** Common mutation metadata for tracing / idempotency */
+export interface MutationMeta {
+  requestId: string;
+  platform: ClientPlatform;
+}
+
+/** Entities protected by optimistic concurrency */
+export interface VersionedEntity {
+  id: string;
+  version: number | string;
+  updatedAt?: string;
+}
+
+export interface FeedbackToastOptions {
+  kind?: 'success' | 'error' | 'info';
+}
+
+export interface FeedbackConfirmOptions {
+  title?: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  destructive?: boolean;
+}
+
+/** Cross-platform user feedback port */
+export interface FeedbackPort {
+  toast(message: string, options?: FeedbackToastOptions): void | Promise<void>;
+  confirm(options: FeedbackConfirmOptions): Promise<boolean>;
+  error(error: unknown, fallbackMessage?: string): void | Promise<void>;
+}
+
 /** 用户信息基础字段 */
 export interface UserInfo {
   id: string;

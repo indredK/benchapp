@@ -20,6 +20,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     outputRoot: 'dist',
     alias: {
       '@': path.resolve(__dirname, '..', 'src'),
+      '@repo/features': path.resolve(__dirname, '..', '..', '..', 'packages', 'features', 'src'),
     },
     plugins: [
       "@tarojs/plugin-generator"

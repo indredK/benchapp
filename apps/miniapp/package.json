@@ -80,6 +80,7 @@
     "postcss": "^8.5.6",
     "@types/minimatch": "^5",
     "@repo/core": "workspace:*",
+    "@repo/features": "workspace:*",
     "@repo/api": "workspace:*",
     "@repo/types": "workspace:*"
   }

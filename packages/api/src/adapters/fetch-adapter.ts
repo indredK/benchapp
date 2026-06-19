@@ -42,19 +42,38 @@ export function createFetchAdapter(options?: { baseURL?: string; defaultTimeout?
           signal: req.signal ?? controller.signal,
         });
 
-        if (!response.ok) {
-          let body: unknown;
-          try { body = await response.json(); } catch { /* noop */ }
+        let body: unknown;
+        try {
+          body = await response.json();
+        } catch {
+          body = null;
+        }
 
+        const requestId =
+          response.headers.get('x-request-id') ??
+          (body && typeof body === 'object' ? (body as { requestId?: string }).requestId : undefined);
+
+        if (!response.ok) {
           throw new AppError(
             (body as { message?: string })?.message ?? `HTTP ${response.status}`,
             response.status === 401 ? BizErrorCode.UNAUTHORIZED : BizErrorCode.UNKNOWN,
-            { httpStatus: response.status, data: body },
+            { httpStatus: response.status, data: body, requestId },
           );
         }
 
-        const json: T = await response.json();
-        return json;
+        if (body && typeof body === 'object' && 'code' in body && 'data' in body) {
+          const apiBody = body as { code: number; data: T; message?: string; requestId?: string };
+          if (apiBody.code !== 0) {
+            throw new AppError(
+              apiBody.message ?? 'Business error',
+              apiBody.code as BizErrorCode,
+              { httpStatus: response.status, data: body, requestId: apiBody.requestId ?? requestId },
+            );
+          }
+          return apiBody.data;
+        }
+
+        return body as T;
       } catch (error) {
         if (error instanceof AppError) throw error;
 

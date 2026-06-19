@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@repo/core": "workspace:*",
+    "@repo/features": "workspace:*",
     "@repo/api": "workspace:*",
     "@repo/types": "workspace:*",
     "react": "^19.0.0",

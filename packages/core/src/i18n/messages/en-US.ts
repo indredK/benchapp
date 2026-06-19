@@ -22,6 +22,15 @@ const enUS = {
   'common.networkError': 'Network error, please try again',
   'common.operationSuccess': 'Success',
   'common.operationFailed': 'Failed',
+  'validation.searchRequired': 'Enter a search keyword',
+  'validation.departmentNameRequired': 'Enter a department name',
+  'validation.memberNameRequired': 'Enter a member name',
+  'validation.nameRequired': 'Enter a name',
+  'validation.nameTooLong': 'Name must be 32 characters or fewer',
+  'validation.phoneRequired': 'Enter a phone number',
+  'validation.phoneInvalid': 'Enter a valid phone number',
+  'validation.emailInvalid': 'Enter a valid email address',
+  'validation.remarkTooLong': 'Remark must be 200 characters or fewer',
 
   // Auth
   'auth.login': 'Login',

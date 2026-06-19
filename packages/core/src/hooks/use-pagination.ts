@@ -2,7 +2,7 @@
 // usePagination — pagination state hook
 // ============================================================
 
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 interface PaginationConfig {
   pageSize?: number;
@@ -47,7 +47,7 @@ export function usePagination(config: PaginationConfig = {}) {
     return getState();
   }, [defaultPage, pageSize, getState]);
 
-  const updateResult = useCallback((total: number, currentPageSize: number) => {
+  const updateResult = useCallback((total: number, _currentPageSize: number) => {
     stateRef.current.total = total;
     stateRef.current.hasMore = stateRef.current.page * stateRef.current.pageSize < total;
     return getState();

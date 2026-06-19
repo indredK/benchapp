@@ -1,7 +1,5 @@
 // 组织架构 Tab
-import { useState } from 'react';
 import {
-  Alert,
   Platform,
   ScrollView,
   StyleSheet,
@@ -10,37 +8,25 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useOrganizationController } from '@repo/features';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { PageContainer } from '@/components/page-container';
 import { useT } from '@/lib/i18n-context';
 import { useTheme } from '@/hooks/use-theme';
+import { mobileFeedback } from '@/lib/feedback';
 import { Spacing } from '@/constants/theme';
 
 export default function OrganizationScreen() {
   const t = useT();
   const theme = useTheme();
-  const [searchText, setSearchText] = useState('');
-  const [deptName, setDeptName] = useState('');
-  const [memberName, setMemberName] = useState('');
-
-  const handleSearch = () => {
-    if (!searchText.trim()) return;
-    Alert.alert(t('common.search'), `${t('org.searchBtn')}: ${searchText}`);
-  };
-
-  const handleAddDept = () => {
-    if (!deptName.trim()) return;
-    Alert.alert(t('org.addDepartment'), `${t('org.departmentName')}: ${deptName}`);
-    setDeptName('');
-  };
-
-  const handleAddMember = () => {
-    if (!memberName.trim()) return;
-    Alert.alert(t('org.addMember'), `${t('org.memberName')}: ${memberName}`);
-    setMemberName('');
-  };
+  const { draft, setSearchText, setDeptName, setMemberName, handleSearch, handleAddDepartment, handleAddMember } =
+    useOrganizationController({
+      platform: 'mobile',
+      feedback: mobileFeedback,
+      t,
+    });
 
   const inputStyle = [styles.input, { borderColor: theme.border, color: theme.text, backgroundColor: theme.background }];
   const btnStyle = [styles.btn, { backgroundColor: theme.brand }];
@@ -63,12 +49,12 @@ export default function OrganizationScreen() {
               </ThemedText>
               <TextInput
                 style={inputStyle}
-                value={searchText}
+                value={draft.searchText}
                 onChangeText={setSearchText}
                 placeholder={t('org.searchPlaceholder')}
                 placeholderTextColor={theme.textTertiary}
               />
-              <TouchableOpacity style={btnStyle} onPress={handleSearch}>
+              <TouchableOpacity style={btnStyle} onPress={() => void handleSearch()}>
                 <ThemedText type="small" style={{ color: theme.white }}>{t('org.searchBtn')}</ThemedText>
               </TouchableOpacity>
             </ThemedView>
@@ -82,12 +68,12 @@ export default function OrganizationScreen() {
               </ThemedText>
               <TextInput
                 style={inputStyle}
-                value={deptName}
+                value={draft.deptName}
                 onChangeText={setDeptName}
                 placeholder={t('org.namePlaceholder')}
                 placeholderTextColor={theme.textTertiary}
               />
-              <TouchableOpacity style={btnStyle} onPress={handleAddDept}>
+              <TouchableOpacity style={btnStyle} onPress={() => void handleAddDepartment()}>
                 <ThemedText type="small" style={{ color: theme.white }}>{t('org.submit')}</ThemedText>
               </TouchableOpacity>
             </ThemedView>
@@ -101,12 +87,12 @@ export default function OrganizationScreen() {
               </ThemedText>
               <TextInput
                 style={inputStyle}
-                value={memberName}
+                value={draft.memberName}
                 onChangeText={setMemberName}
                 placeholder={t('org.namePlaceholder')}
                 placeholderTextColor={theme.textTertiary}
               />
-              <TouchableOpacity style={btnStyle} onPress={handleAddMember}>
+              <TouchableOpacity style={btnStyle} onPress={() => void handleAddMember()}>
                 <ThemedText type="small" style={{ color: theme.white }}>{t('org.submit')}</ThemedText>
               </TouchableOpacity>
             </ThemedView>

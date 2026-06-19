@@ -5,7 +5,6 @@ import { View } from 'react-native';
 export function PageContainer({ children }: { children: ReactNode }) {
   return (
     <View
-      // @ts-expect-error web-only style
       style={{
         width: '100%',
         maxWidth: 800,

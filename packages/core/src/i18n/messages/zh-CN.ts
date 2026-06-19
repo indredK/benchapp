@@ -23,6 +23,15 @@ const zhCN = {
   'common.networkError': '网络异常，请稍后重试',
   'common.operationSuccess': '操作成功',
   'common.operationFailed': '操作失败',
+  'validation.searchRequired': '请输入搜索关键字',
+  'validation.departmentNameRequired': '请输入部门名称',
+  'validation.memberNameRequired': '请输入成员姓名',
+  'validation.nameRequired': '请输入姓名',
+  'validation.nameTooLong': '姓名不能超过 32 个字符',
+  'validation.phoneRequired': '请输入手机号',
+  'validation.phoneInvalid': '请输入正确的手机号',
+  'validation.emailInvalid': '请输入正确的邮箱地址',
+  'validation.remarkTooLong': '备注不能超过 200 个字符',
 
   // Auth
   'auth.login': '登录',

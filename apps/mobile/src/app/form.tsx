@@ -1,7 +1,5 @@
 // 表单 Tab
-import { useState } from 'react';
 import {
-  Alert,
   Platform,
   ScrollView,
   StyleSheet,
@@ -10,32 +8,24 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useContactFormController } from '@repo/features';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { PageContainer } from '@/components/page-container';
 import { useT } from '@/lib/i18n-context';
 import { useTheme } from '@/hooks/use-theme';
+import { mobileFeedback } from '@/lib/feedback';
 import { Spacing } from '@/constants/theme';
 
 export default function FormScreen() {
   const t = useT();
   const theme = useTheme();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [remark, setRemark] = useState('');
-
-  const handleSubmit = () => {
-    Alert.alert(t('common.operationSuccess'), t('form.submitSuccess'));
-  };
-
-  const handleReset = () => {
-    setName('');
-    setPhone('');
-    setEmail('');
-    setRemark('');
-  };
+  const { draft, setName, setPhone, setEmail, setRemark, handleSubmit, handleReset } = useContactFormController({
+    platform: 'mobile',
+    feedback: mobileFeedback,
+    t,
+  });
 
   const inputStyle = [styles.input, { borderColor: theme.border, color: theme.text, backgroundColor: theme.background }];
 
@@ -55,7 +45,7 @@ export default function FormScreen() {
               </ThemedText>
               <TextInput
                 style={inputStyle}
-                value={name}
+                value={draft.name}
                 onChangeText={setName}
                 placeholder={t('form.namePlaceholder')}
                 placeholderTextColor={theme.textTertiary}
@@ -67,7 +57,7 @@ export default function FormScreen() {
               </ThemedText>
               <TextInput
                 style={inputStyle}
-                value={phone}
+                value={draft.phone}
                 onChangeText={setPhone}
                 placeholder={t('form.phonePlaceholder')}
                 placeholderTextColor={theme.textTertiary}
@@ -80,7 +70,7 @@ export default function FormScreen() {
               </ThemedText>
               <TextInput
                 style={inputStyle}
-                value={email}
+                value={draft.email}
                 onChangeText={setEmail}
                 placeholder={t('form.emailPlaceholder')}
                 placeholderTextColor={theme.textTertiary}
@@ -94,7 +84,7 @@ export default function FormScreen() {
               </ThemedText>
               <TextInput
                 style={[inputStyle, styles.textArea]}
-                value={remark}
+                value={draft.remark}
                 onChangeText={setRemark}
                 placeholder={t('form.remarkPlaceholder')}
                 placeholderTextColor={theme.textTertiary}
@@ -107,7 +97,7 @@ export default function FormScreen() {
               <ThemedView style={styles.btnRow} type="backgroundElement">
                 <TouchableOpacity
                   style={[styles.btnSubmit, { backgroundColor: theme.brand }]}
-                  onPress={handleSubmit}>
+                  onPress={() => void handleSubmit()}>
                   <ThemedText type="small" style={{ color: theme.white }}>
                     {t('form.submit')}
                   </ThemedText>

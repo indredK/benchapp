@@ -1,12 +1,14 @@
 // 我的 (Settings) Tab
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useProfileSettingsController } from '@repo/features';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { PageContainer } from '@/components/page-container';
 import { useT, useLocale } from '@/lib/i18n-context';
 import { useTheme, useThemeMode } from '@/hooks/use-theme';
+import { mobileFeedback } from '@/lib/feedback';
 import { Spacing } from '@/constants/theme';
 
 export default function ProfileScreen() {
@@ -14,13 +16,10 @@ export default function ProfileScreen() {
   const theme = useTheme();
   const { locale, setLocale } = useLocale();
   const { mode: themeMode, setMode: setThemeMode } = useThemeMode();
-
-  const handleLogout = () => {
-    Alert.alert(t('settings.logout'), t('profile.logoutConfirm'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      { text: t('settings.logout'), style: 'destructive', onPress: () => {} },
-    ]);
-  };
+  const { languageOptions, themeOptions, handleLogout } = useProfileSettingsController({
+    feedback: mobileFeedback,
+    t,
+  });
 
   return (
     <ThemedView style={styles.root}>
@@ -36,19 +35,19 @@ export default function ProfileScreen() {
               {/* Language */}
               <ThemedText type="smallBold">{t('settings.language')}</ThemedText>
               <View style={styles.optionRow}>
-                {(['zh-CN', 'en-US'] as const).map((lang) => (
+                {languageOptions.map((lang) => (
                   <TouchableOpacity
-                    key={lang}
+                    key={lang.key}
                     style={[
                       styles.optionBtn,
                       { borderColor: theme.border },
-                      locale === lang && { borderColor: theme.brand, backgroundColor: theme.brandLight },
+                      locale === lang.key && { borderColor: theme.brand, backgroundColor: theme.brandLight },
                     ]}
-                    onPress={() => setLocale(lang)}>
+                    onPress={() => void setLocale(lang.key)}>
                     <ThemedText
                       type="small"
-                      themeColor={locale === lang ? 'text' : 'textSecondary'}>
-                      {t(`language.${lang === 'zh-CN' ? 'zhCN' : 'enUS'}` as any)}
+                      themeColor={locale === lang.key ? 'text' : 'textSecondary'}>
+                      {lang.label}
                     </ThemedText>
                   </TouchableOpacity>
                 ))}
@@ -59,19 +58,19 @@ export default function ProfileScreen() {
                 {t('settings.theme')}
               </ThemedText>
               <View style={styles.optionRow}>
-                {(['light', 'dark', 'system'] as const).map((m) => (
+                {themeOptions.map((m) => (
                   <TouchableOpacity
-                    key={m}
+                    key={m.key}
                     style={[
                       styles.optionBtn,
                       { borderColor: theme.border },
-                      themeMode === m && { borderColor: theme.brand, backgroundColor: theme.brandLight },
+                      themeMode === m.key && { borderColor: theme.brand, backgroundColor: theme.brandLight },
                     ]}
-                    onPress={() => setThemeMode(m)}>
+                    onPress={() => void setThemeMode(m.key)}>
                     <ThemedText
                       type="small"
-                      themeColor={themeMode === m ? 'text' : 'textSecondary'}>
-                      {t(`theme.${m}` as any)}
+                      themeColor={themeMode === m.key ? 'text' : 'textSecondary'}>
+                      {m.label}
                     </ThemedText>
                   </TouchableOpacity>
                 ))}
@@ -87,7 +86,7 @@ export default function ProfileScreen() {
             </ThemedView>
 
             {/* --- Logout --- */}
-            <TouchableOpacity style={[styles.logoutBtn, { borderColor: theme.error }]} onPress={handleLogout}>
+            <TouchableOpacity style={[styles.logoutBtn, { borderColor: theme.error }]} onPress={() => void handleLogout()}>
               <ThemedText type="small" themeColor="error">
                 {t('settings.logout')}
               </ThemedText>

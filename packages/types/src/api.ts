@@ -2,7 +2,7 @@
 // API contract types — shared request/response DTOs
 // ============================================================
 
-import type { PaginatedResponse, PaginationParams } from './common';
+import type { MutationMeta, PaginatedResponse, PaginationParams } from './common';
 
 // --- HTTP ---
 
@@ -17,6 +17,9 @@ export interface RequestOptions {
   timeoutMs?: number;
   withAuth?: boolean;
   signal?: AbortSignal;
+  idempotencyKey?: string;
+  meta?: MutationMeta;
+  retryOnUnauthorized?: boolean;
 }
 
 export interface HttpAdapter {
@@ -28,6 +31,7 @@ export interface HttpAdapter {
 export interface TokenProvider {
   getAccessToken(): Promise<string | null>;
   clearAccessToken(): Promise<void>;
+  refreshAccessToken?(): Promise<string | null>;
 }
 
 export interface AuthState {

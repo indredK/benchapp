@@ -2,48 +2,34 @@
 // Mobile — Theme Context (light / dark / system)
 // ============================================================
 
-import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
+import { useThemeState } from '@repo/core/hooks';
 import { Colors } from '@/constants/theme';
-import type { ThemeColor } from '@/constants/theme';
 import { mobileStorage } from './storage';
-
-type ThemeMode = 'light' | 'dark' | 'system';
-type ResolvedTheme = 'light' | 'dark';
+import { themeStore } from './theme';
+import type { ThemeMode, ResolvedThemeMode } from '@repo/types/theme';
 
 interface ThemeContextValue {
   mode: ThemeMode;
-  resolved: ResolvedTheme;
-  colors: typeof Colors.light;
-  setMode: (mode: ThemeMode) => void;
+  resolved: ResolvedThemeMode;
+  colors: (typeof Colors)[ResolvedThemeMode];
+  setMode: (mode: ThemeMode) => Promise<void>;
+  hydrated: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const STORAGE_KEY = 'app_theme';
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const systemScheme = useColorScheme();
-  const systemResolved: ResolvedTheme =
+  const systemResolved: ResolvedThemeMode =
     systemScheme === 'dark' ? 'dark' : 'light';
 
-  const [mode, setModeState] = useState<ThemeMode>('system');
-
-  // Hydrate from storage
-  useEffect(() => {
-    mobileStorage.getItem(STORAGE_KEY).then((saved) => {
-      if (saved === 'light' || saved === 'dark' || saved === 'system') {
-        setModeState(saved);
-      }
-    }).catch(() => {});
-  }, []);
-
-  const setMode = useCallback((next: ThemeMode) => {
-    setModeState(next);
-    mobileStorage.setItem(STORAGE_KEY, next).catch(() => {});
-  }, []);
-
-  const resolved: ResolvedTheme = mode === 'system' ? systemResolved : mode;
+  const { mode, resolved, setMode, hydrated } = useThemeState({
+    store: themeStore,
+    storage: mobileStorage,
+    systemTheme: systemResolved,
+  });
 
   const value = useMemo<ThemeContextValue>(
     () => ({
@@ -51,8 +37,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       resolved,
       colors: Colors[resolved],
       setMode,
+      hydrated,
     }),
-    [mode, resolved, setMode],
+    [hydrated, mode, resolved, setMode],
   );
 
   return (

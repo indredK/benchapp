@@ -3,6 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@repo/features": "workspace:*",
     "@expo/ui": "~56.0.18",
     "expo": "~56.0.12",
     "expo-constants": "~56.0.18",
@@ -40,6 +41,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "build:ios": "eas build --platform ios",
+    "build:android": "eas build --platform android",
     "lint": "expo lint"
   },
   "private": true

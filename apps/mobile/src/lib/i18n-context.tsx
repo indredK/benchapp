@@ -2,41 +2,31 @@
 // Mobile — i18n Context & useT hook
 // ============================================================
 
-import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { createTranslate } from '@repo/core/i18n';
-import type { Locale } from '@repo/types/i18n';
+import { useLocaleState } from '@repo/core/hooks';
 import { mobileStorage } from './storage';
+import { localeStore } from './i18n';
+import type { Locale } from '@repo/types/i18n';
 
 interface I18nContextValue {
   locale: Locale;
-  setLocale: (locale: Locale) => void;
+  setLocale: (locale: Locale) => Promise<void>;
   t: ReturnType<typeof createTranslate>;
+  hydrated: boolean;
 }
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-const STORAGE_KEY = 'app_locale';
-
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('zh-CN');
-
-  // Hydrate from storage
-  useEffect(() => {
-    mobileStorage.getItem(STORAGE_KEY).then((saved) => {
-      if (saved === 'zh-CN' || saved === 'en-US') {
-        setLocaleState(saved);
-      }
-    }).catch(() => {});
-  }, []);
-
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    mobileStorage.setItem(STORAGE_KEY, next).catch(() => {});
-  }, []);
+  const { locale, setLocale, hydrated } = useLocaleState({
+    store: localeStore,
+    storage: mobileStorage,
+  });
 
   const t = useMemo(() => createTranslate(locale), [locale]);
 
-  const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
+  const value = useMemo(() => ({ locale, setLocale, t, hydrated }), [hydrated, locale, setLocale, t]);
 
   return (
     <I18nContext.Provider value={value}>

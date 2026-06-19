@@ -1,18 +1,23 @@
 // 组织架构页
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, Text, Input, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { useOrganizationController } from '@repo/features';
 import { useI18n } from '@/hooks/use-i18n';
 import { useTheme } from '@/hooks/use-theme';
+import { miniappFeedback } from '@/lib/feedback';
 import { lightColors, darkColors } from '@repo/core';
 import './index.scss';
 
 export default function OrganizationPage() {
   const { t } = useI18n();
   const { resolved: themeResolved } = useTheme();
-  const [searchText, setSearchText] = useState('');
-  const [deptName, setDeptName] = useState('');
-  const [memberName, setMemberName] = useState('');
+  const { draft, setSearchText, setDeptName, setMemberName, handleSearch, handleAddDepartment, handleAddMember } =
+    useOrganizationController({
+      platform: 'miniapp',
+      feedback: miniappFeedback,
+      t,
+    });
 
   // Ensure nav bar matches current theme
   useEffect(() => {
@@ -24,23 +29,6 @@ export default function OrganizationPage() {
     });
   }, [themeResolved]);
 
-  const handleSearch = () => {
-    if (!searchText.trim()) return;
-    Taro.showToast({ title: `${t('common.search')}: ${searchText}`, icon: 'none' });
-  };
-
-  const handleAddDept = () => {
-    if (!deptName.trim()) return;
-    Taro.showToast({ title: `${t('org.addDepartment')}: ${deptName}`, icon: 'none' });
-    setDeptName('');
-  };
-
-  const handleAddMember = () => {
-    if (!memberName.trim()) return;
-    Taro.showToast({ title: `${t('org.addMember')}: ${memberName}`, icon: 'none' });
-    setMemberName('');
-  };
-
   return (
     <View className={`org-page org-page--${themeResolved}`}>
       <View className="org-page__title">{t('org.title')}</View>
@@ -50,11 +38,11 @@ export default function OrganizationPage() {
         <Text className="label">{t('org.searchPlaceholder')}</Text>
         <Input
           className="input"
-          value={searchText}
+          value={draft.searchText}
           onInput={(e) => setSearchText(e.detail.value)}
           placeholder={t('org.searchPlaceholder')}
         />
-        <Button className="btn" onClick={handleSearch}>{t('org.searchBtn')}</Button>
+        <Button className="btn" onClick={() => void handleSearch()}>{t('org.searchBtn')}</Button>
       </View>
 
       {/* Add Department */}
@@ -62,11 +50,11 @@ export default function OrganizationPage() {
         <Text className="section-title">{t('org.addDepartment')}</Text>
         <Input
           className="input"
-          value={deptName}
+          value={draft.deptName}
           onInput={(e) => setDeptName(e.detail.value)}
           placeholder={t('org.namePlaceholder')}
         />
-        <Button className="btn" onClick={handleAddDept}>{t('org.submit')}</Button>
+        <Button className="btn" onClick={() => void handleAddDepartment()}>{t('org.submit')}</Button>
       </View>
 
       {/* Add Member */}
@@ -74,11 +62,11 @@ export default function OrganizationPage() {
         <Text className="section-title">{t('org.addMember')}</Text>
         <Input
           className="input"
-          value={memberName}
+          value={draft.memberName}
           onInput={(e) => setMemberName(e.detail.value)}
           placeholder={t('org.namePlaceholder')}
         />
-        <Button className="btn" onClick={handleAddMember}>{t('org.submit')}</Button>
+        <Button className="btn" onClick={() => void handleAddMember()}>{t('org.submit')}</Button>
       </View>
     </View>
   );

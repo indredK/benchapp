@@ -15,6 +15,7 @@ export class ApiClient {
   private adapter: HttpAdapter;
   private tokenProvider?: TokenProvider;
   private defaultTimeoutMs: number;
+  private refreshPromise: Promise<string | null> | null = null;
 
   constructor(config: ApiClientConfig) {
     this.adapter = config.adapter;
@@ -28,10 +29,25 @@ export class ApiClient {
   }
 
   /** Build final headers: merge user headers + auth header */
-  private async buildHeaders(userHeaders?: Record<string, string>): Promise<Record<string, string>> {
+  private async buildHeaders(
+    options: Pick<RequestOptions, 'headers' | 'withAuth' | 'idempotencyKey' | 'meta'>,
+  ): Promise<Record<string, string>> {
+    const { headers: userHeaders, withAuth = true, idempotencyKey, meta } = options;
     const headers: Record<string, string> = { ...userHeaders };
 
-    if (this.tokenProvider) {
+    if (idempotencyKey) {
+      headers['Idempotency-Key'] = idempotencyKey;
+    }
+
+    if (meta?.platform) {
+      headers['X-Client-Platform'] = meta.platform;
+    }
+
+    if (meta?.requestId) {
+      headers['X-Request-Id'] = meta.requestId;
+    }
+
+    if (withAuth && this.tokenProvider) {
       const token = await this.tokenProvider.getAccessToken();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -41,8 +57,25 @@ export class ApiClient {
     return headers;
   }
 
-  async request<T>(options: RequestOptions): Promise<T> {
-    const headers = await this.buildHeaders(options.headers);
+  private async refreshAccessTokenSingleFlight(): Promise<string | null> {
+    if (!this.tokenProvider?.refreshAccessToken) return null;
+
+    if (!this.refreshPromise) {
+      this.refreshPromise = this.tokenProvider.refreshAccessToken()
+        .catch(async (error) => {
+          await this.tokenProvider?.clearAccessToken();
+          throw error;
+        })
+        .finally(() => {
+          this.refreshPromise = null;
+        });
+    }
+
+    return this.refreshPromise;
+  }
+
+  private async requestInternal<T>(options: RequestOptions, isRetry: boolean): Promise<T> {
+    const headers = await this.buildHeaders(options);
 
     try {
       return await this.adapter.request<T>({
@@ -51,11 +84,28 @@ export class ApiClient {
         timeoutMs: options.timeoutMs ?? this.defaultTimeoutMs,
       });
     } catch (error) {
+      if (
+        error instanceof AppError &&
+        error.isUnauthorized &&
+        options.withAuth !== false &&
+        options.retryOnUnauthorized !== false &&
+        !isRetry
+      ) {
+        const nextToken = await this.refreshAccessTokenSingleFlight();
+        if (nextToken) {
+          return this.requestInternal<T>(options, true);
+        }
+      }
+
       if (error instanceof AppError && error.isUnauthorized && this.tokenProvider) {
         await this.tokenProvider.clearAccessToken();
       }
       throw error;
     }
+  }
+
+  async request<T>(options: RequestOptions): Promise<T> {
+    return this.requestInternal<T>(options, false);
   }
 
   // Convenience methods

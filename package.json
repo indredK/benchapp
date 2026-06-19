@@ -6,8 +6,13 @@
   "scripts": {
     "prepare": "husky",
     "start": "node ./scripts/start.mjs",
+    "dev:web": "node ./scripts/start.mjs web dev",
     "dev:miniapp": "node ./scripts/start.mjs miniapp dev:weapp",
     "dev:mobile": "node ./scripts/start.mjs mobile start",
+    "build:web": "pnpm --dir apps/web build",
+    "build:miniapp": "pnpm --dir apps/miniapp build:weapp",
+    "build:app:ios": "pnpm --dir apps/mobile build:ios",
+    "build:app:android": "pnpm --dir apps/mobile build:android",
     "build": "pnpm -r build"
   },
   "keywords": [],

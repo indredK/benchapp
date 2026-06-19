@@ -2,24 +2,14 @@
 // MiniApp — Theme hook (light / dark / system)
 // ============================================================
 
-import { useState, useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Taro from '@tarojs/taro';
+import { useThemeState } from '@repo/core/hooks';
+import type { ResolvedThemeMode } from '@repo/types/theme';
 import { miniappStorage } from '@/lib/storage';
+import { themeStore } from '@/lib/theme';
 
-export type ThemeMode = 'light' | 'dark' | 'system';
-export type ResolvedTheme = 'light' | 'dark';
-
-const STORAGE_KEY = 'app_theme';
-
-let globalMode: ThemeMode = 'system';
-let globalResolved: ResolvedTheme = 'light';
-const listeners = new Set<(mode: ThemeMode, resolved: ResolvedTheme) => void>();
-
-function notifyAll(mode: ThemeMode, resolved: ResolvedTheme) {
-  listeners.forEach((fn) => fn(mode, resolved));
-}
-
-function resolveSystemTheme(): ResolvedTheme {
+function resolveSystemTheme(): ResolvedThemeMode {
   try {
     const sysInfo = Taro.getSystemInfoSync();
     return sysInfo.theme === 'dark' ? 'dark' : 'light';
@@ -28,47 +18,30 @@ function resolveSystemTheme(): ResolvedTheme {
   }
 }
 
-function resolveTheme(mode: ThemeMode): ResolvedTheme {
-  return mode === 'system' ? resolveSystemTheme() : mode;
+function useMiniappSystemTheme(): ResolvedThemeMode {
+  const [systemTheme, setSystemTheme] = useState<ResolvedThemeMode>(resolveSystemTheme);
+
+  useEffect(() => {
+    const anyTaro = Taro as typeof Taro & {
+      onThemeChange?: (listener: (res: { theme: string }) => void) => void;
+      offThemeChange?: (listener: (res: { theme: string }) => void) => void;
+    };
+    const listener = (res: { theme: string }) => {
+      setSystemTheme(res.theme === 'dark' ? 'dark' : 'light');
+    };
+    anyTaro.onThemeChange?.(listener);
+    return () => anyTaro.offThemeChange?.(listener);
+  }, []);
+
+  return systemTheme;
 }
 
 export function useTheme() {
-  const [mode, setModeState] = useState<ThemeMode>(globalMode);
-  const [resolved, setResolved] = useState<ResolvedTheme>(globalResolved);
+  const systemTheme = useMiniappSystemTheme();
 
-  useEffect(() => {
-    // Hydrate from storage
-    miniappStorage.getItem(STORAGE_KEY)
-      .then((saved) => {
-        if (saved === 'light' || saved === 'dark' || saved === 'system') {
-          globalMode = saved;
-          globalResolved = resolveTheme(globalMode);
-          notifyAll(globalMode, globalResolved);
-          setModeState(globalMode);
-          setResolved(globalResolved);
-        }
-      })
-      .catch(() => {
-        setModeState(globalMode);
-        setResolved(globalResolved);
-      });
-
-    const listener = (m: ThemeMode, r: ResolvedTheme) => {
-      setModeState(m);
-      setResolved(r);
-    };
-    listeners.add(listener);
-    return () => { listeners.delete(listener); };
-  }, []);
-
-  const setMode = useCallback((next: ThemeMode) => {
-    globalMode = next;
-    globalResolved = resolveTheme(next);
-    miniappStorage.setItem(STORAGE_KEY, next).catch(() => {});
-    notifyAll(globalMode, globalResolved);
-    setModeState(globalMode);
-    setResolved(globalResolved);
-  }, []);
-
-  return { mode, resolved, setMode };
+  return useThemeState({
+    store: themeStore,
+    storage: miniappStorage,
+    systemTheme,
+  });
 }

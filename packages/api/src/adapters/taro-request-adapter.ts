@@ -46,6 +46,15 @@ function buildTaroUrl(baseURL: string, url: string, query?: Record<string, strin
   return params ? `${fullUrl}?${params}` : fullUrl;
 }
 
+function getRequestId(header: Record<string, string> | undefined, body: unknown): string | undefined {
+  const fromHeader = header?.['x-request-id'] ?? header?.['X-Request-Id'];
+  if (fromHeader) return fromHeader;
+  if (body && typeof body === 'object' && 'requestId' in body) {
+    return (body as { requestId?: string }).requestId;
+  }
+  return undefined;
+}
+
 export function createTaroRequestAdapter(options?: { baseURL?: string; defaultTimeout?: number }): HttpAdapter {
   const baseURL = options?.baseURL ?? '';
   const defaultTimeout = options?.defaultTimeout ?? 15000;
@@ -68,19 +77,25 @@ export function createTaroRequestAdapter(options?: { baseURL?: string; defaultTi
           timeout: timeoutMs,
         });
 
+        const body = result.data;
+        const requestId = getRequestId(result.header, body);
+
         if (result.statusCode >= 400) {
           throw new AppError(
             `HTTP ${result.statusCode}`,
             result.statusCode === 401 ? BizErrorCode.UNAUTHORIZED : BizErrorCode.UNKNOWN,
-            { httpStatus: result.statusCode },
+            { httpStatus: result.statusCode, data: body, requestId },
           );
         }
 
         // Support both raw T and wrapped ApiResponse<T>
-        const body = result.data;
         if (body && typeof body === 'object' && 'code' in body && 'data' in body) {
           if (body.code !== 0) {
-            throw new AppError(body.message ?? 'Business error', body.code as BizErrorCode, { data: body });
+            throw new AppError(body.message ?? 'Business error', body.code as BizErrorCode, {
+              data: body,
+              requestId,
+              httpStatus: result.statusCode,
+            });
           }
           return body.data;
         }

@@ -2,51 +2,19 @@
 // MiniApp — i18n hook
 // ============================================================
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { createTranslate } from '@repo/core/i18n';
-import type { Locale } from '@repo/types/i18n';
+import { useLocaleState } from '@repo/core/hooks';
 import { miniappStorage } from '@/lib/storage';
-
-const STORAGE_KEY = 'app_locale';
-
-let globalLocale: Locale = 'zh-CN';
-let globalT = createTranslate(globalLocale);
-const listeners = new Set<(locale: Locale) => void>();
-
-function notifyAll(locale: Locale) {
-  listeners.forEach((fn) => fn(locale));
-}
+import { localeStore } from '@/lib/i18n';
 
 export function useI18n() {
-  const [locale, setLocaleState] = useState<Locale>(globalLocale);
+  const { locale, setLocale, hydrated } = useLocaleState({
+    store: localeStore,
+    storage: miniappStorage,
+  });
 
-  useEffect(() => {
-    // Hydrate from storage
-    miniappStorage.getItem(STORAGE_KEY)
-      .then((saved) => {
-        if (saved === 'zh-CN' || saved === 'en-US') {
-          globalLocale = saved;
-          globalT = createTranslate(globalLocale);
-          notifyAll(globalLocale);
-          setLocaleState(globalLocale);
-        }
-      })
-      .catch(() => {});
+  const t = useMemo(() => createTranslate(locale), [locale]);
 
-    const listener = (l: Locale) => setLocaleState(l);
-    listeners.add(listener);
-    return () => { listeners.delete(listener); };
-  }, []);
-
-  const setLocale = useCallback((next: Locale) => {
-    globalLocale = next;
-    globalT = createTranslate(next);
-    miniappStorage.setItem(STORAGE_KEY, next).catch(() => {});
-    notifyAll(next);
-    setLocaleState(next);
-  }, []);
-
-  const t = useMemo(() => globalT, [locale]);
-
-  return { locale, setLocale, t };
+  return { locale, setLocale, hydrated, t };
 }

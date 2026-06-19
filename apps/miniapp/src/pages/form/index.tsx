@@ -1,21 +1,23 @@
 // 表单页
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, Text, Input, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { useContactFormController } from '@repo/features';
 import { useI18n } from '@/hooks/use-i18n';
 import { useTheme } from '@/hooks/use-theme';
+import { miniappFeedback } from '@/lib/feedback';
 import { lightColors, darkColors } from '@repo/core';
 import './index.scss';
 
 export default function FormPage() {
   const { t } = useI18n();
   const { resolved: themeResolved } = useTheme();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [remark, setRemark] = useState('');
+  const { draft, setName, setPhone, setEmail, setRemark, handleSubmit, handleReset } = useContactFormController({
+    platform: 'miniapp',
+    feedback: miniappFeedback,
+    t,
+  });
 
-  // Ensure nav bar matches current theme
   useEffect(() => {
     const c = themeResolved === 'dark' ? darkColors : lightColors;
     Taro.setNavigationBarColor({
@@ -25,17 +27,6 @@ export default function FormPage() {
     });
   }, [themeResolved]);
 
-  const handleSubmit = () => {
-    Taro.showToast({ title: t('form.submitSuccess'), icon: 'success' });
-  };
-
-  const handleReset = () => {
-    setName('');
-    setPhone('');
-    setEmail('');
-    setRemark('');
-  };
-
   return (
     <View className={`form-page form-page--${themeResolved}`}>
       <View className="form-page__title">{t('form.title')}</View>
@@ -44,7 +35,7 @@ export default function FormPage() {
         <Text className="label">{t('form.name')}</Text>
         <Input
           className="input"
-          value={name}
+          value={draft.name}
           onInput={(e) => setName(e.detail.value)}
           placeholder={t('form.namePlaceholder')}
         />
@@ -53,7 +44,7 @@ export default function FormPage() {
         <Input
           className="input"
           type="number"
-          value={phone}
+          value={draft.phone}
           onInput={(e) => setPhone(e.detail.value)}
           placeholder={t('form.phonePlaceholder')}
         />
@@ -61,7 +52,7 @@ export default function FormPage() {
         <Text className="label">{t('form.email')}</Text>
         <Input
           className="input"
-          value={email}
+          value={draft.email}
           onInput={(e) => setEmail(e.detail.value)}
           placeholder={t('form.emailPlaceholder')}
         />
@@ -69,13 +60,13 @@ export default function FormPage() {
         <Text className="label">{t('form.remark')}</Text>
         <Input
           className="input input--textarea"
-          value={remark}
+          value={draft.remark}
           onInput={(e) => setRemark(e.detail.value)}
           placeholder={t('form.remarkPlaceholder')}
         />
 
         <View className="btn-row">
-          <Button className="btn btn--submit" onClick={handleSubmit}>
+          <Button className="btn btn--submit" onClick={() => void handleSubmit()}>
             {t('form.submit')}
           </Button>
           <Button className="btn btn--reset" onClick={handleReset}>

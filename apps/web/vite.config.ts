@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@repo/core': path.resolve(__dirname, '../../packages/core/src'),
+      '@repo/features': path.resolve(__dirname, '../../packages/features/src'),
       '@repo/api': path.resolve(__dirname, '../../packages/api/src'),
       '@repo/types': path.resolve(__dirname, '../../packages/types/src'),
     },

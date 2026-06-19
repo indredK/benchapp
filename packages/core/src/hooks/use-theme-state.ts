@@ -23,7 +23,7 @@ export function useThemeState(options: {
   const { store, storage, storageKey = 'app_theme', systemTheme } = options;
 
   const mode = useSyncExternalStore(
-    (cb) => store.subscribe((m) => cb(m)),
+    (cb) => store.subscribe(() => cb()),
     store.getMode,
     store.getMode,
   );
@@ -55,4 +55,4 @@ export function useThemeState(options: {
   return { mode, resolved, setMode, hydrated };
 }
 
-export { ThemeMode, ResolvedThemeMode };
+export type { ThemeMode, ResolvedThemeMode };
