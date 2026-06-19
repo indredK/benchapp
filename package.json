@@ -1,0 +1,23 @@
+{
+  "name": "my-workspace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky",
+    "start": "node ./scripts/start.mjs",
+    "dev:miniapp": "node ./scripts/start.mjs miniapp dev:weapp",
+    "dev:mobile": "node ./scripts/start.mjs mobile start",
+    "build": "pnpm -r build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.25.0",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@inquirer/prompts": "^8.5.2",
+    "husky": "^9.1.7"
+  }
+}

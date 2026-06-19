@@ -1,0 +1,14 @@
+packages:
+  - apps/*
+  - packages/*
+
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - '@tarojs/binding'
+  - '@tarojs/cli'
+  - core-js
+  - core-js-pure
+  - esbuild
+
+nodeLinker: hoisted
