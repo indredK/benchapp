@@ -19,13 +19,15 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.mobile"
+      "package": "com.anonymous.mobile",
+      "enableProguardInReleaseBuilds": true
     },
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "./plugins/withAndroidSplits",
       "expo-router",
       [
         "expo-splash-screen",
