@@ -38,6 +38,19 @@ let cachedConfig: EnvConfig | null = null;
 
 export function getEnvConfig(): EnvConfig {
   if (cachedConfig) return cachedConfig;
-  cachedConfig = configs[resolveEnv()];
+  let config = configs[resolveEnv()];
+
+  // 运行时环境变量覆盖（编译时注入，不会进生产包）
+  if (typeof process !== 'undefined' && process.env) {
+    if (process.env.API_BASE_URL) {
+      config = { ...config, baseURL: process.env.API_BASE_URL };
+    }
+    // EXPO_PUBLIC_* 是 Expo 的编译时常量注入方式
+    if (process.env.EXPO_PUBLIC_ENABLE_MOCK === 'false') {
+      config = { ...config, enableMock: false };
+    }
+  }
+
+  cachedConfig = config;
   return cachedConfig;
 }

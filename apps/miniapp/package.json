@@ -82,6 +82,7 @@
     "@repo/core": "workspace:*",
     "@repo/features": "workspace:*",
     "@repo/api": "workspace:*",
+    "@repo/api-mocks": "workspace:*",
     "@repo/types": "workspace:*"
   }
 }

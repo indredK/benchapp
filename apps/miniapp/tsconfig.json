@@ -16,9 +16,7 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "paths": {
       // TS5090 leading './'
       "@/*": ["./src/*"],
@@ -29,7 +27,9 @@
       "@repo/features": ["../../packages/features/src"],
       "@repo/features/*": ["../../packages/features/src/*"],
       "@repo/api": ["../../packages/api/src"],
-      "@repo/api/*": ["../../packages/api/src/*"]
+      "@repo/api/*": ["../../packages/api/src/*"],
+      "@repo/api-mocks": ["../../packages/api-mocks/src"],
+      "@repo/api-mocks/*": ["../../packages/api-mocks/src/*"]
     }
   },
   "include": ["./src", "./types", "./config"],

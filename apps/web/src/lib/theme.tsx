@@ -2,7 +2,14 @@
 // Web — Theme Provider (CSS class-based)
 // ============================================================
 
-import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useSyncExternalStore,
+  type ReactNode,
+} from 'react';
 import { useThemeState } from '@repo/core/hooks';
 import { createThemeStore } from '@repo/core/theme';
 import { webStorage } from './storage';
@@ -31,7 +38,11 @@ function getSystemTheme(): ResolvedThemeMode {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const systemTheme = useSyncExternalStore(subscribeSystemTheme, getSystemTheme, () => 'light');
+  const systemTheme = useSyncExternalStore(
+    subscribeSystemTheme,
+    getSystemTheme,
+    () => 'light' as ResolvedThemeMode,
+  );
   const { mode, resolved, setMode, hydrated } = useThemeState({
     store: themeStore,
     storage: webStorage,
@@ -42,13 +53,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle('theme-dark', resolved === 'dark');
   }, [resolved]);
 
-  const value = useMemo(() => ({ mode, resolved, setMode, hydrated }), [hydrated, mode, resolved, setMode]);
-
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+  const value = useMemo(
+    () => ({ mode, resolved, setMode, hydrated }),
+    [hydrated, mode, resolved, setMode],
   );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useThemeMode() {

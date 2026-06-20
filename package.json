@@ -13,18 +13,21 @@
     "build:miniapp": "pnpm --dir apps/miniapp build:weapp",
     "build:app:ios": "pnpm --dir apps/mobile build:ios",
     "build:app:android": "pnpm --dir apps/mobile build:android",
-    "build": "pnpm -r build"
+    "build:app:ios:local": "pnpm --dir apps/mobile build:ios:local",
+    "build:app:android:local": "pnpm --dir apps/mobile build:android:local",
+    "build": "node ./scripts/build.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.25.0",
   "lint-staged": {
-    "*.{ts,tsx,js,mjs,json,md,scss,css,yaml,yml}": [
-      "prettier --write"
-    ],
     "*.{ts,tsx}": [
-      "tsc --noEmit"
+      "prettier --write",
+      "node scripts/typecheck-staged.mjs"
+    ],
+    "*.{js,mjs,json,md,scss,css,yaml,yml}": [
+      "prettier --write"
     ]
   },
   "devDependencies": {

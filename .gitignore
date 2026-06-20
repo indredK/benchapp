@@ -10,7 +10,11 @@ dist/
 web-build/
 expo-env.d.ts
 
-# Native
+# Expo prebuild 生成的原生工程（不应提交）
+apps/mobile/ios/
+apps/mobile/android/
+
+# Native（证书/密钥等敏感文件）
 .kotlin/
 *.orig.*
 *.jks
@@ -42,3 +46,5 @@ example
 # generated native folders
 /ios
 /android
+
+.codebuddy
